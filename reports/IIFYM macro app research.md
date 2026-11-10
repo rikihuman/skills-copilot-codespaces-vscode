@@ -147,9 +147,9 @@ Keep it to one deployable API plus Functions. Do not split it into microservices
 |---|---|
 | API | ASP.NET Core (.NET 10) minimal APIs, modular monolith (Logging, Foods, Engine, Coaching, Billing folders, not separate services) |
 | Data | Azure SQL with EF Core. Tables: `FoodItem` (source = SAFOODS / Retailer / Verified / User), `LogEntry`, `WeighIn`, `Phase`, `CheckIn` (inputs + outputs stored for auditability), `ConceptMastery`, `Consent` |
-| Engine | Pure C# class library (`AdaptiveEngine`), no I/O, property-tested against synthetic weight/intake series; versioned so every check-in records the algorithm version |
+| Engine | Pure C# class library (`AdaptiveEngine`), no I/O, property-tested against synthetic weight/intake series; versioned so every check-in records the algorithm version. Authoritative on the server; a TypeScript port runs on-device, and both pass the same JSON golden test vectors in CI |
 | Background | Azure Functions: weekly check-in timer per user timezone, food-DB import/barcode enrichment, renewal-engagement jobs, POPIA data-subject export/delete |
-| Client | .NET MAUI if you want one language (or Flutter/React Native for UI maturity); SQLite local store with delta sync for offline-first and low data use |
+| Client | **React Native with Expo** (decided 10 Nov 2026; see the UI design report): Expo Router, Reanimated, Victory Native/Skia charts; `expo-sqlite` local store with an outbox and delta sync for offline-first and low data use; TypeScript port of the on-device engine parts |
 | Billing | App Store / Play subscriptions via RevenueCat; server-side entitlement webhook |
 | AI | Azure OpenAI or Anthropic API behind a `CoachService` with RAG over the lesson corpus, ED-safety classifier pre/post, no write access to targets; photo logging returns a draft only |
 | Hosting/compliance | Azure South Africa North for health data (POPIA residency simplifies cross-border rules); Key Vault; Always Encrypted or TDE for special personal information |
